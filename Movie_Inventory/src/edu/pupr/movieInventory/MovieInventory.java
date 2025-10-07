@@ -7,21 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-
-//Parent Class
-class Movie {
-	private String title;
-}
-
-
-//Child Class
-class MovieInventory extends Movie {
-	
-}
-
-
-
-public class MovieInventoryMenu extends JFrame {
+public class MovieInventory extends JFrame {
 
 	private JPanel contentPane;
 
@@ -32,7 +18,7 @@ public class MovieInventoryMenu extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MovieInventoryMenu frame = new MovieInventoryMenu();
+					MovieInventory frame = new MovieInventory();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -44,7 +30,7 @@ public class MovieInventoryMenu extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public MovieInventoryMenu() {
+	public MovieInventory() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();

@@ -2,6 +2,7 @@ package edu.pupr.movieInventory;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,9 +48,9 @@ public class MovieQueries {
 			resultSet = selectAllMovies.executeQuery();
 			 results = new ArrayList<>();
 			 
-			 while (resultSet.next()) {
+			 while (resultSet.next()) {;
 				 results.add(new Movie(resultSet.getString("title"), resultSet.getString("director"), resultSet.getString("plot"), resultSet.getString("rating"),
-						 resultSet.getDouble("budget"), resultSet.getDate("releaseDate")));
+						 resultSet.getDouble("budget"), resultSet.getDate("releaseDate").toLocalDate()));
 			}
 			 
 		} catch (SQLException ex) {
@@ -78,7 +79,7 @@ public class MovieQueries {
 			 
 			 while (resultSet.next()) {
 				 results.add(new Movie(resultSet.getString("title"), resultSet.getString("director"), resultSet.getString("plot"), resultSet.getString("rating"),
-						 resultSet.getDouble("budget"), resultSet.getDate("releaseDate")));
+						 resultSet.getDouble("budget"), resultSet.getDate("releaseDate").toLocalDate()));
 			}
 			 
 		} catch (SQLException ex) {
@@ -107,7 +108,7 @@ public class MovieQueries {
 			 
 			 while (resultSet.next()) {
 				 results.add(new Movie(resultSet.getString("title"), resultSet.getString("director"), resultSet.getString("plot"), resultSet.getString("rating"),
-						 resultSet.getDouble("budget"), resultSet.getDate("releaseDate")));
+						 resultSet.getDouble("budget"), resultSet.getDate("releaseDate").toLocalDate()));
 			}
 			 
 		} catch (SQLException ex) {
@@ -135,7 +136,7 @@ public class MovieQueries {
 			 
 			 while (resultSet.next()) {
 				 results.add(new Movie(resultSet.getString("title"), resultSet.getString("director"), resultSet.getString("plot"), resultSet.getString("rating"),
-						 resultSet.getDouble("budget"), resultSet.getDate("releaseDate")));
+						 resultSet.getDouble("budget"), resultSet.getDate("releaseDate").toLocalDate()));
 			}
 			 
 		} catch (SQLException ex) {
@@ -176,14 +177,15 @@ public class MovieQueries {
 	}
 	
 	
-	public int updateMovie(String title, String director, Date releaseYear) {
+	public int updateMovie(String title, String director, LocalDate releaseDate) {
 		int result = 0;
 		
 		try {
 			
 			updateMovie.setString(1, title);
 			updateMovie.setString(2, director);
-			updateMovie.setDate(3, releaseYear);
+			//updateMovie.setString(3, plot);
+			updateMovie.setDate(3, Date.valueOf(releaseDate));
 			
 			result = updateMovie.executeUpdate();
 			

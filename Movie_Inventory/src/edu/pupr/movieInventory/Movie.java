@@ -1,6 +1,6 @@
 package edu.pupr.movieInventory;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.swing.JFileChooser;
 
@@ -11,11 +11,11 @@ public class Movie {
 	private String plot;
 	private String rating;
 	private double budget;
-	private Date releaseDate;
+	private LocalDate releaseDate;
 	
 	public Movie() {}
 	
-	public Movie(String title, String director, String plot, String rating, double budget, Date releaseDate)
+	public Movie(String title, String director, String plot, String rating, double budget, LocalDate releaseDate)
 	{
 		setTitle(title);
 		setDirector(director);
@@ -66,11 +66,11 @@ public class Movie {
 		this.budget = budget;
 	}
 
-	public Date getReleaseDate() {
+	public LocalDate getReleaseDate() {
 		return releaseDate;
 	}
 
-	public void setReleaseDate(Date releaseDate) {
+	public void setReleaseDate(LocalDate releaseDate) {
 		this.releaseDate = releaseDate;
 	}
 	

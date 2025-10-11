@@ -129,7 +129,7 @@ public class AddMovie extends JFrame {
 		titleLabel.setBounds(15, 56, 49, 14);
 		
 		JLabel directorLabel = new JLabel("Director:");
-		directorLabel.setBounds(15, 81, 49, 14);
+		directorLabel.setBounds(15, 81, 71, 14);
 		directorTextField.setBounds(68, 81, 296, 20);
 		directorTextField.setColumns(10);
 		
@@ -248,3 +248,9 @@ public class AddMovie extends JFrame {
 	}
 	
 }
+
+
+
+//IMPORTANT EXCEPTIONS TO BE HANDLED:
+//Invalid day of month - add movie and update movie - both must be verified
+//Duplicate movie tried to be added - moviequeries

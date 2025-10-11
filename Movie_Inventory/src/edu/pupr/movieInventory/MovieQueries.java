@@ -34,7 +34,7 @@ public class MovieQueries {
 			selectMovieByDirector = connection.prepareStatement("SELECT * FROM movies.movies WHERE director = ?"); 
 			selectMovieByTitleDirectorYear = connection.prepareStatement("SELECT * FROM movies.movies WHERE (title = ?) AND (director = ?) AND (YEAR(releaseDate) = ?)");
 			insertNewMovie = connection.prepareStatement("INSERT INTO movies.movies (title, director, plot, rating, budget, releaseDate) VALUES(?, ?, ?, ?, ?, ?)");
-			updateMovie = connection.prepareStatement("UPDATE movies.movies SET director = ?, plot = ?, rating = ?, budget = ?, releaseDate = ?, WHERE title = ?");
+			updateMovie = connection.prepareStatement("UPDATE movies.movies SET director = ?, plot = ?, rating = ?, budget = ?, releaseDate = ? WHERE title = ?");
 			
 		} catch (SQLException ex) {
 			System.err.println("Connect error to DB: " + ex.getMessage());
@@ -215,12 +215,12 @@ public class MovieQueries {
 		
 		try {
 			
-			updateMovie.setString(1, title);
-			updateMovie.setString(2, director);
-			updateMovie.setString(3, plot);
-			updateMovie.setString(4, rating);
-			updateMovie.setDouble(5, budget);
-			updateMovie.setDate(6, Date.valueOf(releaseDate));
+			updateMovie.setString(6, title);
+			updateMovie.setString(1, director);
+			updateMovie.setString(2, plot);
+			updateMovie.setString(3, rating);
+			updateMovie.setDouble(4, budget);
+			updateMovie.setDate(5, Date.valueOf(releaseDate));
 			
 			result = updateMovie.executeUpdate();
 			

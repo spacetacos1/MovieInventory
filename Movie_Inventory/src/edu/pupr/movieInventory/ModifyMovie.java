@@ -91,6 +91,8 @@ public class ModifyMovie extends JFrame {
 		lNameLabel.setBounds(23, 164, 49, 14);
 		
 		titleTextField = new JTextField();
+		titleTextField.setEditable(false);
+		titleTextField.setEnabled(false);
 		titleTextField.setBounds(90, 24, 434, 20);
 		titleTextField.setColumns(10);
 		
@@ -99,15 +101,15 @@ public class ModifyMovie extends JFrame {
 		directorTextField.setColumns(10);
 		
 		updateButton = new JButton("Update");
-		updateButton.setBounds(423, 253, 101, 32);
+		updateButton.setBounds(405, 253, 119, 32);
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				MovieQueries movieQueries = new MovieQueries();
 				String title = titleTextField.getText();
 				String director = directorTextField.getText();
-				LocalDate releaseDate = LocalDate.of(Integer.parseInt(dayTextField.getText()),monthComboBox.getSelectedIndex() + 1, Integer.parseInt(yearTextField.getText()));
-				String plot = "plot";
-				String rating = "PG-13";
+				LocalDate releaseDate = LocalDate.of(Integer.parseInt(yearTextField.getText()),monthComboBox.getSelectedIndex() + 1,Integer.parseInt(dayTextField.getText()));
+				String plot = plotTextArea.getText();
+				String rating = getRating(ratingComboBox.getSelectedIndex());
 				double budget = Double.parseDouble(budgetTextField.getText());
 				
 				int result = movieQueries.updateMovie(title, director, plot,rating, budget, releaseDate);
@@ -120,8 +122,15 @@ public class ModifyMovie extends JFrame {
 			}
 		});
 		
+		//Integer.parseInt(dayTextField.getText())
+		//monthComboBox.getSelectedIndex() + 1
+		//Integer.parseInt(yearTextField.getText())
+		
+		
+		
+		
 		closeButton = new JButton("Close");
-		closeButton.setBounds(423, 291, 101, 32);
+		closeButton.setBounds(405, 291, 119, 32);
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				dispose();
@@ -129,7 +138,7 @@ public class ModifyMovie extends JFrame {
 		});
 		
 		askMovieButton = new JButton("Search Movie");
-		askMovieButton.setBounds(423, 213, 101, 32);
+		askMovieButton.setBounds(405, 213, 119, 32);
 		askMovieButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 			
@@ -166,29 +175,7 @@ public class ModifyMovie extends JFrame {
 				dayTextField.setText(String.valueOf(movie.getReleaseDate().getDayOfMonth()));
 				budgetTextField.setText(String.valueOf(movie.getBudget()));
 				
-				String ratingValue = movie.getRating();
-				int rating = 0;
-				switch(ratingValue) {
-				case "G":
-					rating = 0;
-					break;
-				case "PG":
-					rating = 1;
-					break;
-				case "PG-13":
-					rating = 2;
-					break;
-				case "R":
-					rating = 3;
-					break;
-				case "CN-17":
-					rating = 4;
-					break;
-				default:
-					rating = 0;
-				}
-				
-				ratingComboBox.setSelectedIndex(rating);
+				ratingComboBox.setSelectedIndex(getRatingIndex(movie.getRating()));
 
 				}catch (NumberFormatException ex) {
 					JOptionPane.showMessageDialog(null, "Invalid Year Input!");
@@ -302,4 +289,39 @@ public class ModifyMovie extends JFrame {
 		}
 		return flag;
 	}
+	
+	private int getRatingIndex(String ratingValue) {
+		switch(ratingValue) {
+		case "G":
+			return 0;
+		case "PG":
+			return 1;
+		case "PG-13":
+			return 2;
+		case "R":
+			return 3;
+		case "CN-17":
+			return 4;
+		default:
+			return 0;
+		}
+	}
+	
+	private String getRating(int ratingValue) {
+		switch(ratingValue) {
+		case 0:
+			return "G";
+		case 1:
+			return "PG";
+		case 2:
+			return "PG-13";
+		case 3:
+			return "R";
+		case 4:
+			return "CN-17";
+		default:
+			return "G";
+		}
+	}
+	
 }

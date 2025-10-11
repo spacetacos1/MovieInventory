@@ -21,6 +21,7 @@ public class MovieQueries {
 	private PreparedStatement selectMovieByTitle = null;
 	private PreparedStatement selectMovieByDirector = null;
 	private PreparedStatement selectMovieByYear = null;
+	private PreparedStatement selectMovieByTitleDirectorYear = null;
 	private PreparedStatement insertNewMovie = null;
 	private PreparedStatement updateMovie = null;
 	
@@ -31,7 +32,8 @@ public class MovieQueries {
 			selectAllMovies = connection.prepareStatement("SELECT * FROM movies.movies");
 			selectMovieByTitle = connection.prepareStatement("SELECT * FROM movies.movies WHERE title = ?"); //Used ? to prevent SQL Injection
 			selectMovieByDirector = connection.prepareStatement("SELECT * FROM movies.movies WHERE director = ?"); 
-			insertNewMovie = connection.prepareStatement("INSERT INTO movies.movies (title, director, plot, rating, budget, releaseDate) VALUES(?, ?, ?, ?, ?, ?)");	//ID is automatically included
+			selectMovieByTitleDirectorYear = connection.prepareStatement("SELECT * FROM movies.movies WHERE (title = ?) AND (director = ?) AND (YEAR(releaseDate) = ?)");
+			insertNewMovie = connection.prepareStatement("INSERT INTO movies.movies (title, director, plot, rating, budget, releaseDate) VALUES(?, ?, ?, ?, ?, ?)");
 			updateMovie = connection.prepareStatement("UPDATE movies.movies SET director = ?, plot = ?, rating = ?, budget = ?, releaseDate = ?, WHERE title = ?");
 			
 		} catch (SQLException ex) {
@@ -154,6 +156,37 @@ public class MovieQueries {
 	}
 	
 	
+	public List<Movie> getMovieByTitleDirectorYear(String title, String director, String year) {
+		List<Movie> results = null;
+		ResultSet resultSet = null;
+		
+		try {
+			selectMovieByTitleDirectorYear.setString(1, title);
+			selectMovieByTitleDirectorYear.setString(2, director);
+			selectMovieByTitleDirectorYear.setString(3, year);
+			resultSet = selectMovieByTitleDirectorYear.executeQuery();
+			 results = new ArrayList<>();
+			 
+			 while (resultSet.next()) {
+				 results.add(new Movie(resultSet.getString("title"), resultSet.getString("director"), resultSet.getString("plot"), resultSet.getString("rating"),
+						 resultSet.getDouble("budget"), resultSet.getDate("releaseDate").toLocalDate()));
+			}
+			 
+		} catch (SQLException ex) {
+			System.err.println("Error in DB: " + ex.getMessage());
+			close();
+		} finally {
+			try {
+				resultSet.close();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		return results;
+	}
+	
+	
 	public int addMovie(String title, String director, String plot, String rating, double budget, Date releaseDate) {
 		int result = 0;
 		
@@ -177,15 +210,17 @@ public class MovieQueries {
 	}
 	
 	
-	public int updateMovie(String title, String director, LocalDate releaseDate) {
+	public int updateMovie(String title, String director, String plot, String rating, double budget, LocalDate releaseDate) {
 		int result = 0;
 		
 		try {
 			
 			updateMovie.setString(1, title);
 			updateMovie.setString(2, director);
-			//updateMovie.setString(3, plot);
-			updateMovie.setDate(3, Date.valueOf(releaseDate));
+			updateMovie.setString(3, plot);
+			updateMovie.setString(4, rating);
+			updateMovie.setDouble(5, budget);
+			updateMovie.setDate(6, Date.valueOf(releaseDate));
 			
 			result = updateMovie.executeUpdate();
 			

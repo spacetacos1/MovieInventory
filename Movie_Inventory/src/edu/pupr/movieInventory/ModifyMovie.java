@@ -5,7 +5,9 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -18,20 +20,39 @@ import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.EmptyBorder;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import edu.pupr.movieInventory.MovieQueries;
 import edu.pupr.movieInventory.Movie;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
 
 public class ModifyMovie extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField fNameField;
-	private JTextField lNameField;
-	private JTextField idTextField;
-	private JButton askIdButton;
+	private JTextField directorTextField;
+	private JTextField titleTextField;
+	private JButton askMovieButton;
 	private JButton updateButton;
 	private JButton closeButton;
+	private JLabel ratingLabel;
+	private JComboBox ratingComboBox;
+	private JLabel dateLabel;
+	private JLabel dayLabel;
+	private JTextField dayTextField;
+	private JLabel monthLabel;
+	private JComboBox monthComboBox;
+	private JLabel yearLabel;
+	private JTextField yearTextField;
+	private JTextArea plotTextArea;
+	private JLabel budgetLabel;
+	private JTextField budgetTextField;
 
 	/**
 	 * Launch the application.
@@ -54,120 +75,231 @@ public class ModifyMovie extends JFrame {
 	 */
 	public ModifyMovie() {
 		setTitle("Modify Movie");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 449, 259);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 563, 376);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		JLabel idLabel = new JLabel("ID:");
+		JLabel idLabel = new JLabel("Title:");
+		idLabel.setBounds(23, 27, 63, 14);
 		
-		JLabel fNameLabel = new JLabel("First Name:");
+		JLabel fNameLabel = new JLabel("Director:");
+		fNameLabel.setBounds(23, 65, 63, 14);
 		
-		JLabel lNameLabel = new JLabel("Last Name:");
+		JLabel lNameLabel = new JLabel("Plot:");
+		lNameLabel.setBounds(23, 164, 49, 14);
 		
-		idTextField = new JTextField();
-		idTextField.setEnabled(false);
-		idTextField.setColumns(10);
+		titleTextField = new JTextField();
+		titleTextField.setBounds(90, 24, 434, 20);
+		titleTextField.setColumns(10);
 		
-		fNameField = new JTextField();
-		fNameField.setColumns(10);
-		
-		lNameField = new JTextField();
-		lNameField.setColumns(10);
+		directorTextField = new JTextField();
+		directorTextField.setBounds(90, 62, 273, 20);
+		directorTextField.setColumns(10);
 		
 		updateButton = new JButton("Update");
+		updateButton.setBounds(423, 253, 101, 32);
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				MovieQueries movieQueries = new MovieQueries();
-				String title = idTextField.getText();
-				String director = fNameField.getText();
-				//LocalDate releaseDate = LocalDate.of(lNameField.getText());
+				String title = titleTextField.getText();
+				String director = directorTextField.getText();
+				LocalDate releaseDate = LocalDate.of(Integer.parseInt(dayTextField.getText()),monthComboBox.getSelectedIndex() + 1, Integer.parseInt(yearTextField.getText()));
+				String plot = "plot";
+				String rating = "PG-13";
+				double budget = Double.parseDouble(budgetTextField.getText());
 				
-				LocalDate release = LocalDate.of(01,01,01); 							//TEMPORARY********* ADD DAY, MONTH, AND YEAR FIELDS FOR FULL DATE
-				int result = movieQueries.updateMovie(title, director, release);		//RELEASE IS TEMPORARY **** ADD PLOT, RATING, BUDGET, AND FULL RELEASE DATE TO UPDATE MOVIE METHOD
+				int result = movieQueries.updateMovie(title, director, plot,rating, budget, releaseDate);
 				
 				if(result == 1) {
 					JOptionPane.showMessageDialog(null, "Successfully Updated Record!");
 				} else {
 					JOptionPane.showMessageDialog(null, "Unsuccessfully Updated Record!");
 				}
-				
-				//dispose();
 			}
 		});
 		
 		closeButton = new JButton("Close");
+		closeButton.setBounds(423, 291, 101, 32);
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				dispose();
 			}
 		});
 		
-		askIdButton = new JButton("Ask ID");
-		askIdButton.addActionListener(new ActionListener() {
+		askMovieButton = new JButton("Search Movie");
+		askMovieButton.setBounds(423, 213, 101, 32);
+		askMovieButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
+			
+				JTextField askTitleTextField = new JTextField();
+				JTextField askDirectorTextField = new JTextField();
+				JTextField askReleaseYearTextField = new JTextField();
+				
+				Object[] fields = {
+					"Title: ", askTitleTextField,
+					"Director: ", askDirectorTextField,
+					"Release Year: ", askReleaseYearTextField
+				};
+
+
 				MovieQueries movieQueries = new MovieQueries();
+			 
+				int selections = JOptionPane.showConfirmDialog(null, fields, "Enter Movie Details", JOptionPane.OK_CANCEL_OPTION);
+				if(selections == JOptionPane.OK_OPTION) {
+					try {
+					String title = askTitleTextField.getText();
+					String director = askDirectorTextField.getText();
+					String year = askReleaseYearTextField.getText();
+					
+					Integer.parseInt(year);
 				
-				String title = JOptionPane.showInputDialog("Enter Movie Title: ");
-				
-				List<Movie> list = movieQueries.getMovieByTitle(title);
+				List<Movie> list = movieQueries.getMovieByTitleDirectorYear(title, director, year);
 				Movie movie = (Movie)list.get(0);
 				
-				idTextField.setText(movie.getTitle().toString());
-				fNameField.setText(movie.getDirector());
-				lNameField.setText(String.valueOf(movie.getReleaseDate().getYear()));
+				titleTextField.setText(movie.getTitle().toString());
+				directorTextField.setText(movie.getDirector());
+				plotTextArea.setText(movie.getPlot());
+				yearTextField.setText(String.valueOf(movie.getReleaseDate().getYear()));
+				monthComboBox.setSelectedIndex(movie.getReleaseDate().getMonthValue() - 1);
+				dayTextField.setText(String.valueOf(movie.getReleaseDate().getDayOfMonth()));
+				budgetTextField.setText(String.valueOf(movie.getBudget()));
 				
+				String ratingValue = movie.getRating();
+				int rating = 0;
+				switch(ratingValue) {
+				case "G":
+					rating = 0;
+					break;
+				case "PG":
+					rating = 1;
+					break;
+				case "PG-13":
+					rating = 2;
+					break;
+				case "R":
+					rating = 3;
+					break;
+				case "CN-17":
+					rating = 4;
+					break;
+				default:
+					rating = 0;
+				}
+				
+				ratingComboBox.setSelectedIndex(rating);
+
+				}catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Invalid Year Input!");
+				}catch (IndexOutOfBoundsException ex) {
+					JOptionPane.showMessageDialog(null, "That Movie was not found!");
+				}
+				}else {
+				}
+			}  
+		});
+		contentPane.setLayout(null);
+		contentPane.add(fNameLabel);
+		contentPane.add(idLabel);
+		contentPane.add(titleTextField);
+		contentPane.add(directorTextField);
+		contentPane.add(lNameLabel);
+		contentPane.add(askMovieButton);
+		contentPane.add(updateButton);
+		contentPane.add(closeButton);
+		
+		ratingLabel = new JLabel("Rating:");
+		ratingLabel.setBounds(23, 101, 49, 14);
+		contentPane.add(ratingLabel);
+		
+		ratingComboBox = new JComboBox();
+		ratingComboBox.setModel(new DefaultComboBoxModel(new String[] {"G", "PG", "PG-13", "R", "NC-17"}));
+		ratingComboBox.setBounds(90, 97, 82, 22);
+		contentPane.add(ratingComboBox);
+		
+		dateLabel = new JLabel("Release Date:");
+		dateLabel.setBounds(372, 84, 119, 14);
+		contentPane.add(dateLabel);
+		
+		dayLabel = new JLabel("Day:");
+		dayLabel.setBounds(372, 109, 49, 14);
+		contentPane.add(dayLabel);
+		
+		dayTextField = new JTextField();
+		dayTextField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent event) {
+				if(dayTextField.getText().length() > 0 && !(updateButton.isSelected())) {
+					verifyInput(dayTextField);
+					}
 			}
 		});
-		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(18)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(lNameLabel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(fNameLabel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(idLabel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 63, Short.MAX_VALUE))
-					.addGap(18)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(fNameField, GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
-						.addComponent(lNameField, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
-						.addComponent(idTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
-				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-					.addGap(74)
-					.addComponent(askIdButton)
-					.addGap(18)
-					.addComponent(updateButton, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
-					.addComponent(closeButton, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE)
-					.addGap(12))
-		);
-		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(19)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(idLabel)
-						.addComponent(idTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(fNameLabel)
-						.addComponent(fNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lNameLabel)
-						.addComponent(lNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(40)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(closeButton, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-						.addComponent(updateButton, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-						.addComponent(askIdButton))
-					.addContainerGap(25, Short.MAX_VALUE))
-		);
-		gl_contentPane.linkSize(SwingConstants.VERTICAL, new Component[] {updateButton, closeButton, askIdButton});
-		gl_contentPane.linkSize(SwingConstants.HORIZONTAL, new Component[] {updateButton, closeButton, askIdButton});
-		contentPane.setLayout(gl_contentPane);
+		dayTextField.setBounds(423, 106, 101, 20);
+		contentPane.add(dayTextField);
+		dayTextField.setColumns(10);
+		
+		monthLabel = new JLabel("Month:");
+		monthLabel.setBounds(372, 138, 49, 14);
+		contentPane.add(monthLabel);
+		
+		monthComboBox = new JComboBox();
+		monthComboBox.setModel(new DefaultComboBoxModel(new String[] {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}));
+		monthComboBox.setBounds(423, 134, 101, 22);
+		contentPane.add(monthComboBox);
+		
+		yearLabel = new JLabel("Year:");
+		yearLabel.setBounds(372, 172, 49, 14);
+		contentPane.add(yearLabel);
+		
+		yearTextField = new JTextField();
+		yearTextField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent event) {
+				if(yearTextField.getText().length() > 0 && !(updateButton.isSelected())) {
+					verifyInput(yearTextField);
+					}
+			}
+		});
+		yearTextField.setBounds(423, 169, 101, 20);
+		contentPane.add(yearTextField);
+		yearTextField.setColumns(10);
+		
+		plotTextArea = new JTextArea();
+		plotTextArea.setWrapStyleWord(true);
+		plotTextArea.setLineWrap(true);
+		plotTextArea.setBounds(67, 159, 257, 164);
+		contentPane.add(plotTextArea);
+		
+		budgetLabel = new JLabel("Budget:");
+		budgetLabel.setBounds(192, 101, 49, 14);
+		contentPane.add(budgetLabel);
+		
+		budgetTextField = new JTextField();
+		budgetTextField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent event) {
+				if(budgetTextField.getText().length() > 0 && !(updateButton.isSelected())) {
+					verifyInput(budgetTextField);
+					}
+			}
+		});
+		budgetTextField.setBounds(246, 98, 96, 20);
+		contentPane.add(budgetTextField);
+		budgetTextField.setColumns(10);
+	}
+	
+	private boolean verifyInput(JTextField textField) {
+		boolean flag = true;
+		
+		try {
+			Double.parseDouble(textField.getText());
+		}catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(null, "Must enter numbers!");
+			textField.requestFocus();
+			textField.selectAll();
+			flag = false;
+		}
+		return flag;
 	}
 }

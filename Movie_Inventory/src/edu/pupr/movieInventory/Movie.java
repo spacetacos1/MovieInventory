@@ -1,5 +1,6 @@
 package edu.pupr.movieInventory;
 
+import java.io.File;
 import java.time.LocalDate;
 
 import javax.swing.JFileChooser;
@@ -12,6 +13,7 @@ public class Movie {
 	private String rating;
 	private double budget;
 	private LocalDate releaseDate;
+	private File poster;
 	
 	public Movie() {}
 	
@@ -72,6 +74,14 @@ public class Movie {
 
 	public void setReleaseDate(LocalDate releaseDate) {
 		this.releaseDate = releaseDate;
+	}
+
+	public File getPoster() {
+		return poster;
+	}
+
+	public void setPoster(File poster) {
+		this.poster = poster;
 	}
 	
 	

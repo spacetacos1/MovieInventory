@@ -92,7 +92,6 @@ public class ModifyMovie extends JFrame {
 		
 		titleTextField = new JTextField();
 		titleTextField.setEditable(false);
-		titleTextField.setEnabled(false);
 		titleTextField.setBounds(90, 24, 434, 20);
 		titleTextField.setColumns(10);
 		
@@ -121,13 +120,7 @@ public class ModifyMovie extends JFrame {
 				}
 			}
 		});
-		
-		//Integer.parseInt(dayTextField.getText())
-		//monthComboBox.getSelectedIndex() + 1
-		//Integer.parseInt(yearTextField.getText())
-		
-		
-		
+	
 		
 		closeButton = new JButton("Close");
 		closeButton.setBounds(405, 291, 119, 32);
@@ -151,10 +144,7 @@ public class ModifyMovie extends JFrame {
 					"Director: ", askDirectorTextField,
 					"Release Year: ", askReleaseYearTextField
 				};
-
-
-				MovieQueries movieQueries = new MovieQueries();
-			 
+				
 				int selections = JOptionPane.showConfirmDialog(null, fields, "Enter Movie Details", JOptionPane.OK_CANCEL_OPTION);
 				if(selections == JOptionPane.OK_OPTION) {
 					try {
@@ -163,7 +153,8 @@ public class ModifyMovie extends JFrame {
 					String year = askReleaseYearTextField.getText();
 					
 					Integer.parseInt(year);
-				
+					
+				MovieQueries movieQueries = new MovieQueries();
 				List<Movie> list = movieQueries.getMovieByTitleDirectorYear(title, director, year);
 				Movie movie = (Movie)list.get(0);
 				
@@ -322,6 +313,10 @@ public class ModifyMovie extends JFrame {
 		default:
 			return "G";
 		}
+	}
+	
+	public void pressAsk() {
+		askMovieButton.doClick();
 	}
 	
 }

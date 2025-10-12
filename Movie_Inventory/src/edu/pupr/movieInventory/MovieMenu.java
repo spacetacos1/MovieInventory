@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
@@ -70,17 +72,54 @@ public class MovieMenu extends JFrame {
 		modifyMovieMenu = new JMenuItem("Modify a Movie");
 		modifyMovieMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
+			
 				ModifyMovie modifyMovie = new ModifyMovie();
-				
+				modifyMovie.pressAsk();		//Check again later
 				modifyMovie.setVisible(true);
 			}
 		});
 		infoMenu.add(modifyMovieMenu);
 		
 		displayMovie = new JMenuItem("Display a Movie");
+		displayMovie.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				
+				JTextField askTitleTextField = new JTextField();
+				JTextField askDirectorTextField = new JTextField();
+				JTextField askReleaseYearTextField = new JTextField();
+				
+				Object[] fields = {
+					"Title: ", askTitleTextField,
+					"Director: ", askDirectorTextField,
+					"Release Year: ", askReleaseYearTextField
+				};
+
+
+				MovieQueries movieQueries = new MovieQueries();
+			 
+				int selections = JOptionPane.showConfirmDialog(null, fields, "Enter Movie Details", JOptionPane.OK_CANCEL_OPTION);
+				if(selections == JOptionPane.OK_OPTION) {
+					try {
+						ShowMovie movie = new ShowMovie();
+						movie.setFields(askTitleTextField.getText(), askDirectorTextField.getText(), askReleaseYearTextField.getText());
+						movie.setVisible(true);
+					} catch (NumberFormatException ex) {
+						JOptionPane.showMessageDialog(null, "Invalid Year Input!");
+					}catch (IndexOutOfBoundsException ex) {
+						JOptionPane.showMessageDialog(null, "That Movie was not found!");
+					}
+				}
+			}
+		});
 		infoMenu.add(displayMovie);
 		
 		showMoviesMenu = new JMenuItem("Show all Movies");
+		showMoviesMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				AllMovies allMovies = new AllMovies();
+				allMovies.setVisible(true);
+			}
+		});
 		infoMenu.add(showMoviesMenu);
 		
 		exitMenu = new JMenuItem("Exit");

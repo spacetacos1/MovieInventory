@@ -145,6 +145,8 @@ public class AddMovie extends JFrame {
 		contentPane.setLayout(null);
 		
 		plotArea = new JTextArea();
+		plotArea.setWrapStyleWord(true);
+		plotArea.setLineWrap(true);
 		plotArea.setBounds(68, 169, 292, 191);
 		contentPane.add(plotArea);
 		contentPane.add(titleLabel);
@@ -237,7 +239,7 @@ public class AddMovie extends JFrame {
 		boolean flag = true;
 		
 		try {
-			int num = Integer.parseInt(textField.getText());
+			double num = Double.parseDouble(textField.getText());
 		}catch (NumberFormatException ex) {
 			JOptionPane.showMessageDialog(null, "Must enter numbers!");
 			textField.requestFocus();
@@ -253,4 +255,4 @@ public class AddMovie extends JFrame {
 
 //IMPORTANT EXCEPTIONS TO BE HANDLED:
 //Invalid day of month - add movie and update movie - both must be verified
-//Duplicate movie tried to be added - moviequeries
+//Duplicate movie tried to be added -

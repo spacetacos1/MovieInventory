@@ -13,7 +13,7 @@ public class Movie {
 	private String rating;
 	private double budget;
 	private LocalDate releaseDate;
-	private File poster;
+	private File posterFile;
 	
 	public Movie() {}
 	
@@ -76,13 +76,14 @@ public class Movie {
 		this.releaseDate = releaseDate;
 	}
 
-	public File getPoster() {
-		return poster;
+	public File getPosterFile() {
+		return posterFile;
 	}
 
-	public void setPoster(File poster) {
-		this.poster = poster;
+	public void setPosterFile(File posterFile) {
+		this.posterFile = posterFile;
 	}
+	
 	
 	
 	

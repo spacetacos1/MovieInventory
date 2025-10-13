@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.border.EmptyBorder;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -30,6 +31,8 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.File;
+
 import javax.swing.JTextPane;
 import javax.swing.JTextArea;
 
@@ -53,6 +56,8 @@ public class ModifyMovie extends JFrame {
 	private JTextArea plotTextArea;
 	private JLabel budgetLabel;
 	private JTextField budgetTextField;
+	private JButton btnNewButton;
+	private JLabel imageLabel;
 
 	/**
 	 * Launch the application.
@@ -74,9 +79,10 @@ public class ModifyMovie extends JFrame {
 	 * Create the frame.
 	 */
 	public ModifyMovie() {
+		setResizable(false);
 		setTitle("Modify Movie");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 563, 376);
+		setBounds(100, 100, 825, 384);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -100,7 +106,7 @@ public class ModifyMovie extends JFrame {
 		directorTextField.setColumns(10);
 		
 		updateButton = new JButton("Update");
-		updateButton.setBounds(405, 253, 119, 32);
+		updateButton.setBounds(405, 178, 119, 32);
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				MovieQueries movieQueries = new MovieQueries();
@@ -123,7 +129,7 @@ public class ModifyMovie extends JFrame {
 	
 		
 		closeButton = new JButton("Close");
-		closeButton.setBounds(405, 291, 119, 32);
+		closeButton.setBounds(405, 301, 119, 32);
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				dispose();
@@ -131,7 +137,7 @@ public class ModifyMovie extends JFrame {
 		});
 		
 		askMovieButton = new JButton("Search Movie");
-		askMovieButton.setBounds(405, 213, 119, 32);
+		askMovieButton.setBounds(405, 217, 119, 32);
 		askMovieButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 			
@@ -167,7 +173,14 @@ public class ModifyMovie extends JFrame {
 				budgetTextField.setText(String.valueOf(movie.getBudget()));
 				
 				ratingComboBox.setSelectedIndex(getRatingIndex(movie.getRating()));
+				
+				File file = new File("PosterDirectory/" + title + ".png");
+				System.out.println(file.getAbsolutePath());
+				
+				ImageIcon icon = new ImageIcon(file.getAbsolutePath());
 
+				imageLabel.setIcon(icon);
+				
 				}catch (NumberFormatException ex) {
 					JOptionPane.showMessageDialog(null, "Invalid Year Input!");
 				}catch (IndexOutOfBoundsException ex) {
@@ -197,11 +210,11 @@ public class ModifyMovie extends JFrame {
 		contentPane.add(ratingComboBox);
 		
 		dateLabel = new JLabel("Release Date:");
-		dateLabel.setBounds(372, 84, 119, 14);
+		dateLabel.setBounds(373, 65, 119, 14);
 		contentPane.add(dateLabel);
 		
 		dayLabel = new JLabel("Day:");
-		dayLabel.setBounds(372, 109, 49, 14);
+		dayLabel.setBounds(373, 90, 49, 14);
 		contentPane.add(dayLabel);
 		
 		dayTextField = new JTextField();
@@ -213,21 +226,21 @@ public class ModifyMovie extends JFrame {
 					}
 			}
 		});
-		dayTextField.setBounds(423, 106, 101, 20);
+		dayTextField.setBounds(424, 87, 101, 20);
 		contentPane.add(dayTextField);
 		dayTextField.setColumns(10);
 		
 		monthLabel = new JLabel("Month:");
-		monthLabel.setBounds(372, 138, 49, 14);
+		monthLabel.setBounds(373, 119, 49, 14);
 		contentPane.add(monthLabel);
 		
 		monthComboBox = new JComboBox();
 		monthComboBox.setModel(new DefaultComboBoxModel(new String[] {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}));
-		monthComboBox.setBounds(423, 134, 101, 22);
+		monthComboBox.setBounds(424, 115, 101, 22);
 		contentPane.add(monthComboBox);
 		
 		yearLabel = new JLabel("Year:");
-		yearLabel.setBounds(372, 172, 49, 14);
+		yearLabel.setBounds(373, 153, 49, 14);
 		contentPane.add(yearLabel);
 		
 		yearTextField = new JTextField();
@@ -239,14 +252,14 @@ public class ModifyMovie extends JFrame {
 					}
 			}
 		});
-		yearTextField.setBounds(423, 169, 101, 20);
+		yearTextField.setBounds(424, 150, 101, 20);
 		contentPane.add(yearTextField);
 		yearTextField.setColumns(10);
 		
 		plotTextArea = new JTextArea();
 		plotTextArea.setWrapStyleWord(true);
 		plotTextArea.setLineWrap(true);
-		plotTextArea.setBounds(67, 159, 257, 164);
+		plotTextArea.setBounds(67, 159, 257, 174);
 		contentPane.add(plotTextArea);
 		
 		budgetLabel = new JLabel("Budget:");
@@ -265,6 +278,14 @@ public class ModifyMovie extends JFrame {
 		budgetTextField.setBounds(246, 98, 96, 20);
 		contentPane.add(budgetTextField);
 		budgetTextField.setColumns(10);
+		
+		btnNewButton = new JButton("Set New Poster");
+		btnNewButton.setBounds(405, 260, 119, 32);
+		contentPane.add(btnNewButton);
+		
+		imageLabel = new JLabel("");
+		imageLabel.setBounds(563, 27, 238, 306);
+		contentPane.add(imageLabel);
 	}
 	
 	private boolean verifyInput(JTextField textField) {

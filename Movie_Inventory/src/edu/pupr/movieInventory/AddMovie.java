@@ -30,7 +30,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.Date;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.InputMismatchException;
 
@@ -48,6 +53,7 @@ public class AddMovie extends JFrame {
 	private JComboBox ratingComboBox;
 	private JComboBox monthComboBox;
 	private JLabel imageLabel;
+	private File tempFileHolder;
 	
 
 	/**
@@ -83,6 +89,8 @@ public class AddMovie extends JFrame {
 		addButton = new JButton("Add Movie");
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
+				
+				if(imageLabel.getIcon() != null) {
 				MovieQueries addMovie = new MovieQueries();
 				
 				try {
@@ -118,15 +126,39 @@ public class AddMovie extends JFrame {
 				int year = Integer.parseInt(yearTextField.getText());
 				
 				Date releaseDate = Date.valueOf(LocalDate.of(year,  month,  day));
-				
 				int result = addMovie.addMovie(title, director, plot, rating, budget, releaseDate);
 				if(result == 1) {
 					JOptionPane.showMessageDialog(null, "Record successfully inserted!");
+					
+					File directory = new File("PosterDirectory");
+
+			        if (!directory.exists()) {
+			            directory.mkdirs();
+			        }
+
+			        File destination = new File(directory, tempFileHolder.getName());
+			        Files.copy(tempFileHolder.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+			        Path source = destination.toPath();
+
+			        Files.move(source,  source.resolveSibling(title + ".png"));
+
+			        
+			        clearFields();
 				}else
 					JOptionPane.showMessageDialog(null, "Record unsuccessfully inserted!");
 				
+				
+				
 			}catch (InputMismatchException ex) {
 				JOptionPane.showMessageDialog(null, "Rating selection not viable!");
+			}catch (IOException ex) {
+				
+			}catch (DateTimeException ex) {
+				JOptionPane.showMessageDialog(null, "Invalid Day of Month!");
+			}
+			}else {
+				JOptionPane.showMessageDialog(null, "Must include a Poster!");
 			}
 			}
 		});
@@ -258,9 +290,13 @@ public class AddMovie extends JFrame {
 						File selectedImage = ImageSelector();
 						if(selectedImage != null) {
 						ImageIcon image = new ImageIcon(selectedImage.getAbsolutePath());
+						
 						Image scaledImage = image.getImage().getScaledInstance(imageLabel.getWidth(), imageLabel.getHeight(), Image.SCALE_SMOOTH);
 						
+						setTempFileHolder(selectedImage);
+						
 						imageLabel.setIcon(new ImageIcon(scaledImage));
+						
 						}else {
 							throw new InputMismatchException();
 						}
@@ -290,6 +326,25 @@ public class AddMovie extends JFrame {
 	
 }
 	
+	private void setTempFileHolder(File file) {
+		tempFileHolder = file;
+	}
+	
+	private File getTempFileHolder() {
+		return tempFileHolder;
+	}
+	
+	private void clearFields() {
+		imageLabel.setIcon(null);
+		titleTextField.setText("");
+		directorTextField.setText("");
+		budgetTextField.setText("");
+		ratingComboBox.setSelectedIndex(0);
+		dayTextField.setText("");
+		monthComboBox.setSelectedIndex(0);
+		yearTextField.setText("");
+		plotArea.setText("");
+	}
 	
 	public static File ImageSelector() {
 		try {
@@ -326,7 +381,11 @@ public class AddMovie extends JFrame {
 		return null;
 	}
 
+
 }
+
+
+
 //IMPORTANT EXCEPTIONS TO BE HANDLED:
 //Invalid day of month - add movie and update movie - both must be verified
 //Duplicate movie tried to be added -

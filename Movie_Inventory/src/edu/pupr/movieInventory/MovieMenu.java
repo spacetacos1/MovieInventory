@@ -52,7 +52,7 @@ public class MovieMenu extends JFrame {
 		setResizable(false);
 		setTitle("Movie Menu");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 372, 248);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);

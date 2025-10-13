@@ -38,7 +38,6 @@ public class FileManager {
         File destination = new File(directory, getFile().getName());
         Files.copy(getFile().toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
         System.out.println(destination.getPath());
-        JOptionPane.showMessageDialog(null, destination.getAbsolutePath());
 
         Path source = destination.toPath();
 
@@ -49,14 +48,18 @@ public class FileManager {
 		}
 	}
 
-	public ImageIcon getFileImage(String title) {
+	public ImageIcon getFileImage(String title, JLabel imageLabel) {
 		
 		File file = new File("PosterDirectory/" + title + ".png");
 		System.out.println(file.getAbsolutePath());
-		setFile(file);
+		
 		ImageIcon icon = new ImageIcon(file.getAbsolutePath());
 		
-		return icon;
+		Image scaledImage = icon.getImage().getScaledInstance(imageLabel.getWidth(), imageLabel.getHeight(), Image.SCALE_SMOOTH);
+		
+		setFile(file);
+		
+		return new ImageIcon(scaledImage);
 	}
 	
 	public void resizeImage(JLabel imageLabel) {
@@ -77,6 +80,7 @@ public class FileManager {
 			}
 			
 	} catch(InputMismatchException ex) {
+		
 
 	}
 	}
@@ -107,6 +111,7 @@ public class FileManager {
 			}
 			else if(result == JFileChooser.CANCEL_OPTION)
 			{
+				System.out.println("return is null");
 				return null;
 			}
 			

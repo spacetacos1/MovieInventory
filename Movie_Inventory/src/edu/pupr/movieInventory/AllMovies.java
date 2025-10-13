@@ -113,7 +113,7 @@ public class AllMovies extends JFrame {
 				  posterIcon = new ImageIcon(scaledImage);
 			  }
 			  
-			  Object[] data = {title, director, plot, rating, budget, date.format(formattedDate), posterIcon};
+			  Object[] data = {title, director, plot, rating, String.format("%,.2f", budget), date.format(formattedDate), posterIcon};
 			  tableModel.addRow(data); 
 		  }
 		  

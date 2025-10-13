@@ -343,12 +343,12 @@ public class ModifyMovie extends JFrame {
 	yearTextField.setText(String.valueOf(movie.getReleaseDate().getYear()));
 	monthComboBox.setSelectedIndex(movie.getReleaseDate().getMonthValue() - 1);
 	dayTextField.setText(String.valueOf(movie.getReleaseDate().getDayOfMonth()));
-	budgetTextField.setText(String.valueOf(movie.getBudget()));
+	budgetTextField.setText(String.format("%,.2f", movie.getBudget()));
 	
 	ratingComboBox.setSelectedIndex(getRatingIndex(movie.getRating()));
 	
 	FileManager manager = new FileManager();
-	imageLabel.setIcon(manager.getFileImage(title));
+	imageLabel.setIcon(manager.getFileImage(title,imageLabel));
 	setTempFileHolder(manager.getFile());
 	
 		}catch (NumberFormatException ex) {

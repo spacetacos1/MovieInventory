@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -11,6 +12,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ShowMovie extends JFrame {
 
@@ -22,6 +26,7 @@ public class ShowMovie extends JFrame {
 	private JTextField ratingTextField;
 	private JTextField budgetTextField;
 	private JTextField releaseDateTextField;
+	private JButton btnNewButton;
 
 	/**
 	 * Launch the application.
@@ -43,15 +48,16 @@ public class ShowMovie extends JFrame {
 	 * Create the frame.
 	 */
 	public ShowMovie() {
+		setTitle("Show a Movie");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 747, 513);
+		setBounds(100, 100, 747, 544);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		posterLabel = new JLabel("");
-		posterLabel.setBounds(10, 135, 283, 316);
+		posterLabel.setBounds(10, 135, 283, 361);
 		contentPane.add(posterLabel);
 		
 		JLabel titleLabel = new JLabel("Title:");
@@ -96,7 +102,7 @@ public class ShowMovie extends JFrame {
 		plotArea.setEditable(false);
 		plotArea.setWrapStyleWord(true);
 		plotArea.setLineWrap(true);
-		plotArea.setBounds(341, 233, 363, 218);
+		plotArea.setBounds(341, 233, 363, 263);
 		contentPane.add(plotArea);
 		
 		JLabel plotLabel = new JLabel("Plot:");
@@ -119,6 +125,15 @@ public class ShowMovie extends JFrame {
 		releaseDateTextField.setBounds(415, 159, 163, 20);
 		contentPane.add(releaseDateTextField);
 		releaseDateTextField.setColumns(10);
+		
+		btnNewButton = new JButton("Close");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				dispose();
+			}
+		});
+		btnNewButton.setBounds(595, 158, 89, 23);
+		contentPane.add(btnNewButton);
 	}
 	
 	public void setFields(String title, String director, String year) {
@@ -136,11 +151,11 @@ public class ShowMovie extends JFrame {
 		
 		releaseDateTextField.setText(getMonth(month) + day.toString() + ", " + year);
 		
-		budgetTextField.setText(String.valueOf(movie.getBudget()));
+		budgetTextField.setText(String.format("%,.2f", movie.getBudget()));
 		ratingTextField.setText(movie.getRating());
 		
 		FileManager manager = new FileManager();
-		posterLabel.setIcon(manager.getFileImage(title));
+		posterLabel.setIcon(manager.getFileImage(title,posterLabel));
 	}
 
 	private String getMonth(Integer month) {

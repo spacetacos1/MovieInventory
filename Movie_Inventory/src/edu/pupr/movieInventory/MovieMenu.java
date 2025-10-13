@@ -142,6 +142,12 @@ public class MovieMenu extends JFrame {
 		helpMenu.add(contentsMenu);
 		
 		aboutMenu = new JMenuItem("About");
+		aboutMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				About aboutMenu = new About();
+				aboutMenu.setVisible(true);
+			}
+		});
 		helpMenu.add(aboutMenu);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

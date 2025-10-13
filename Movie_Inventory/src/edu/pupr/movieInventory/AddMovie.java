@@ -130,7 +130,7 @@ public class AddMovie extends JFrame {
 				if(result == 1) {
 					JOptionPane.showMessageDialog(null, "Record successfully inserted!");
 					
-					FileManager manager = new FileManager(tempFileHolder, title);
+					FileManager manager = new FileManager(getTempFileHolder(), title);
 					manager.addFile();
 			        clearFields();
 				}else
@@ -268,13 +268,13 @@ public class AddMovie extends JFrame {
 		imageLabel.setBounds(548, 54, 238, 306);
 		contentPane.add(imageLabel);
 		
-		JButton imageButton = new JButton("Change Poster");
+		JButton imageButton = new JButton("Add Poster");
 		imageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				
 				FileManager manager = new FileManager();
-				manager.resizeImage(dateLabel);
-				
+				manager.resizeImage(imageLabel);
+				setTempFileHolder(manager.getFile());
 			}
 		});
 		imageButton.setBounds(398, 272, 126, 42);

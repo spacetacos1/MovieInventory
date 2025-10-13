@@ -56,8 +56,12 @@ public class ModifyMovie extends JFrame {
 	private JTextArea plotTextArea;
 	private JLabel budgetLabel;
 	private JTextField budgetTextField;
-	private JButton btnNewButton;
+	private JButton newPosterButton;
 	private JLabel imageLabel;
+	private String askedTitle;
+	private String askedYear;
+	private String askedDirector;
+	private File tempFileHolder;
 
 	/**
 	 * Launch the application.
@@ -106,9 +110,10 @@ public class ModifyMovie extends JFrame {
 		directorTextField.setColumns(10);
 		
 		updateButton = new JButton("Update");
-		updateButton.setBounds(405, 178, 119, 32);
+		updateButton.setBounds(373, 178, 151, 32);
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
+				
 				MovieQueries movieQueries = new MovieQueries();
 				String title = titleTextField.getText();
 				String director = directorTextField.getText();
@@ -119,8 +124,12 @@ public class ModifyMovie extends JFrame {
 				
 				int result = movieQueries.updateMovie(title, director, plot,rating, budget, releaseDate);
 				
+				FileManager manager = new FileManager(getTempFileHolder(), title);
+				manager.addFile();
+				
 				if(result == 1) {
 					JOptionPane.showMessageDialog(null, "Successfully Updated Record!");
+					clearFields();
 				} else {
 					JOptionPane.showMessageDialog(null, "Unsuccessfully Updated Record!");
 				}
@@ -129,7 +138,7 @@ public class ModifyMovie extends JFrame {
 	
 		
 		closeButton = new JButton("Close");
-		closeButton.setBounds(405, 301, 119, 32);
+		closeButton.setBounds(373, 301, 151, 32);
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				dispose();
@@ -137,58 +146,14 @@ public class ModifyMovie extends JFrame {
 		});
 		
 		askMovieButton = new JButton("Search Movie");
-		askMovieButton.setBounds(405, 217, 119, 32);
+		askMovieButton.setBounds(373, 217, 151, 32);
 		askMovieButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-			
-				JTextField askTitleTextField = new JTextField();
-				JTextField askDirectorTextField = new JTextField();
-				JTextField askReleaseYearTextField = new JTextField();
-				
-				Object[] fields = {
-					"Title: ", askTitleTextField,
-					"Director: ", askDirectorTextField,
-					"Release Year: ", askReleaseYearTextField
-				};
-				
-				int selections = JOptionPane.showConfirmDialog(null, fields, "Enter Movie Details", JOptionPane.OK_CANCEL_OPTION);
-				if(selections == JOptionPane.OK_OPTION) {
-					try {
-					String title = askTitleTextField.getText();
-					String director = askDirectorTextField.getText();
-					String year = askReleaseYearTextField.getText();
-					
-					Integer.parseInt(year);
-					
-				MovieQueries movieQueries = new MovieQueries();
-				List<Movie> list = movieQueries.getMovieByTitleDirectorYear(title, director, year);
-				Movie movie = (Movie)list.get(0);
-				
-				titleTextField.setText(movie.getTitle().toString());
-				directorTextField.setText(movie.getDirector());
-				plotTextArea.setText(movie.getPlot());
-				yearTextField.setText(String.valueOf(movie.getReleaseDate().getYear()));
-				monthComboBox.setSelectedIndex(movie.getReleaseDate().getMonthValue() - 1);
-				dayTextField.setText(String.valueOf(movie.getReleaseDate().getDayOfMonth()));
-				budgetTextField.setText(String.valueOf(movie.getBudget()));
-				
-				ratingComboBox.setSelectedIndex(getRatingIndex(movie.getRating()));
-				
-				File file = new File("PosterDirectory/" + title + ".png");
-				System.out.println(file.getAbsolutePath());
-				
-				ImageIcon icon = new ImageIcon(file.getAbsolutePath());
 
-				imageLabel.setIcon(icon);
-				
-				}catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(null, "Invalid Year Input!");
-				}catch (IndexOutOfBoundsException ex) {
-					JOptionPane.showMessageDialog(null, "That Movie was not found!");
+				if(askMovie()) {
+						setFields();
 				}
-				}else {
-				}
-			}  
+		}
 		});
 		contentPane.setLayout(null);
 		contentPane.add(fNameLabel);
@@ -279,9 +244,19 @@ public class ModifyMovie extends JFrame {
 		contentPane.add(budgetTextField);
 		budgetTextField.setColumns(10);
 		
-		btnNewButton = new JButton("Set New Poster");
-		btnNewButton.setBounds(405, 260, 119, 32);
-		contentPane.add(btnNewButton);
+		newPosterButton = new JButton("Set New Poster");
+		newPosterButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				if(imageLabel.getIcon() != null) {
+				FileManager manager = new FileManager();
+				manager.resizeImage(imageLabel);
+				setTempFileHolder(manager.getFile());
+				}else
+					JOptionPane.showMessageDialog(null, "Must search for a Movie first!");
+			}
+		});
+		newPosterButton.setBounds(373, 260, 151, 32);
+		contentPane.add(newPosterButton);
 		
 		imageLabel = new JLabel("");
 		imageLabel.setBounds(563, 27, 238, 306);
@@ -336,8 +311,110 @@ public class ModifyMovie extends JFrame {
 		}
 	}
 	
-	public void pressAsk() {
-		askMovieButton.doClick();
+	private void clearFields() {
+		imageLabel.setIcon(null);
+		titleTextField.setText("");
+		directorTextField.setText("");
+		budgetTextField.setText("");
+		ratingComboBox.setSelectedIndex(0);
+		dayTextField.setText("");
+		monthComboBox.setSelectedIndex(0);
+		yearTextField.setText("");
+		plotTextArea.setText("");
 	}
+	
+	
+	public void setFields() {
+
+		try {
+		String title = getAskedTitle();
+		String director = getAskedDirector();
+		String year = getAskedYear();
+		
+		Integer.parseInt(year);
+		
+	MovieQueries movieQueries = new MovieQueries();
+	List<Movie> list = movieQueries.getMovieByTitleDirectorYear(title, director, year);
+	Movie movie = (Movie)list.get(0);
+	
+	titleTextField.setText(movie.getTitle().toString());
+	directorTextField.setText(movie.getDirector());
+	plotTextArea.setText(movie.getPlot());
+	yearTextField.setText(String.valueOf(movie.getReleaseDate().getYear()));
+	monthComboBox.setSelectedIndex(movie.getReleaseDate().getMonthValue() - 1);
+	dayTextField.setText(String.valueOf(movie.getReleaseDate().getDayOfMonth()));
+	budgetTextField.setText(String.valueOf(movie.getBudget()));
+	
+	ratingComboBox.setSelectedIndex(getRatingIndex(movie.getRating()));
+	
+	FileManager manager = new FileManager();
+	imageLabel.setIcon(manager.getFileImage(title));
+	setTempFileHolder(manager.getFile());
+	
+		}catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(null, "Invalid Year Input!");
+		}catch (IndexOutOfBoundsException ex) {
+			JOptionPane.showMessageDialog(null, "That Movie was not found!");
+		}
+
+	}
+	
+	public boolean askMovie() {
+		JTextField askTitleTextField = new JTextField();
+		JTextField askDirectorTextField = new JTextField();
+		JTextField askReleaseYearTextField = new JTextField();
+		
+		Object[] fields = {
+			"Title: ", askTitleTextField,
+			"Director: ", askDirectorTextField,
+			"Release Year: ", askReleaseYearTextField
+		};
+		
+		int selections = JOptionPane.showConfirmDialog(null, fields, "Enter Movie Details", JOptionPane.OK_CANCEL_OPTION);
+		if(selections == JOptionPane.OK_OPTION) {
+			setAskedTitle(askTitleTextField.getText());
+			setAskedDirector(askDirectorTextField.getText());
+			setAskedYear(askReleaseYearTextField.getText());
+			return true;
+		}else
+			return false;
+	}
+	
+	
+	
+	public String getAskedTitle() {
+		return askedTitle;
+	}
+
+	public void setAskedTitle(String askedTitle) {
+		this.askedTitle = askedTitle;
+	}
+
+	public String getAskedYear() {
+		return askedYear;
+	}
+
+	public void setAskedYear(String askedYear) {
+		this.askedYear = askedYear;
+	}
+
+	public String getAskedDirector() {
+		return askedDirector;
+	}
+
+	public void setAskedDirector(String askedDirector) {
+		this.askedDirector = askedDirector;
+	}
+
+	public File getTempFileHolder() {
+		return tempFileHolder;
+	}
+
+	public void setTempFileHolder(File tempFileHolder) {
+		this.tempFileHolder = tempFileHolder;
+	}
+	
+	
+
 	
 }

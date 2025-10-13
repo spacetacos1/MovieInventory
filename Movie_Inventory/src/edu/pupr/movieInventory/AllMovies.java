@@ -5,12 +5,14 @@ import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.*;
 
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.sql.Date;
@@ -28,6 +30,7 @@ import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import java.awt.ScrollPane;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.GroupLayout.Alignment;
 
 public class AllMovies extends JFrame {
@@ -98,8 +101,19 @@ public class AllMovies extends JFrame {
 			  Double budget = list.get(i).getBudget(); 
 			  LocalDate date = list.get(i).getReleaseDate();
 		  
-			  String[] data = {title, director, plot, rating, budget.toString(), date.format(formattedDate)};
+			  
+			  
+			  String posterPath = "PosterDirectory/" + title + ".png";
+			  ImageIcon posterIcon = null;
 		  
+			  java.io.File file = new java.io.File(posterPath);
+			  if(file.exists()) {
+				  ImageIcon rawIcon = new ImageIcon(posterPath);
+				  Image scaledImage = rawIcon.getImage().getScaledInstance(120, 160, Image.SCALE_SMOOTH);
+				  posterIcon = new ImageIcon(scaledImage);
+			  }
+			  
+			  Object[] data = {title, director, plot, rating, budget, date.format(formattedDate), posterIcon};
 			  tableModel.addRow(data); 
 		  }
 		  
@@ -107,6 +121,7 @@ public class AllMovies extends JFrame {
 		  JTable table = new JTable(tableModel);
 		  table.setDefaultEditor(Object.class, null);
 		  table.getColumnModel().getColumn(2).setCellRenderer(new WrappingTextRenderer());
+		  table.getColumnModel().getColumn(6).setCellRenderer(new ImageRenderer());
 
 	        
 		  table.setRowHeight(table.getRowHeight() + 200); 
@@ -138,4 +153,24 @@ public class AllMovies extends JFrame {
 
 	        return this;
 	    }
-	}}
+	}
+	
+private class ImageRenderer extends DefaultTableCellRenderer {
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		 JLabel label = new JLabel();
+	        label.setVisible(true);
+
+	        if (value instanceof ImageIcon) {
+	            label.setIcon((ImageIcon) value);
+	        }
+
+	        label.setHorizontalAlignment(JLabel.CENTER);
+	        return label;
+	}
+}
+
+
+
+
+}

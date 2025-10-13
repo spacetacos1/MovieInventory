@@ -138,6 +138,9 @@ public class ShowMovie extends JFrame {
 		
 		budgetTextField.setText(String.valueOf(movie.getBudget()));
 		ratingTextField.setText(movie.getRating());
+		
+		FileManager manager = new FileManager();
+		posterLabel.setIcon(manager.getFileImage(title));
 	}
 
 	private String getMonth(Integer month) {

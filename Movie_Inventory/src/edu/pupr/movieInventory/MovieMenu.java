@@ -72,10 +72,15 @@ public class MovieMenu extends JFrame {
 		modifyMovieMenu = new JMenuItem("Modify a Movie");
 		modifyMovieMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-			
+				
 				ModifyMovie modifyMovie = new ModifyMovie();
-				modifyMovie.pressAsk();		//Check again later
-				modifyMovie.setVisible(true);
+				if(modifyMovie.askMovie()) {
+					modifyMovie.setFields();
+					modifyMovie.setVisible(true);
+				}else
+					modifyMovie.dispose();
+				
+				
 			}
 		});
 		infoMenu.add(modifyMovieMenu);

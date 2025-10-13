@@ -130,20 +130,8 @@ public class AddMovie extends JFrame {
 				if(result == 1) {
 					JOptionPane.showMessageDialog(null, "Record successfully inserted!");
 					
-					File directory = new File("PosterDirectory");
-
-			        if (!directory.exists()) {
-			            directory.mkdirs();
-			        }
-
-			        File destination = new File(directory, tempFileHolder.getName());
-			        Files.copy(tempFileHolder.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-			        Path source = destination.toPath();
-
-			        Files.move(source,  source.resolveSibling(title + ".png"));
-
-			        
+					FileManager manager = new FileManager(tempFileHolder, title);
+					manager.addFile();
 			        clearFields();
 				}else
 					JOptionPane.showMessageDialog(null, "Record unsuccessfully inserted!");
@@ -152,8 +140,6 @@ public class AddMovie extends JFrame {
 				
 			}catch (InputMismatchException ex) {
 				JOptionPane.showMessageDialog(null, "Rating selection not viable!");
-			}catch (IOException ex) {
-				
 			}catch (DateTimeException ex) {
 				JOptionPane.showMessageDialog(null, "Invalid Day of Month!");
 			}
@@ -285,26 +271,10 @@ public class AddMovie extends JFrame {
 		JButton imageButton = new JButton("Change Poster");
 		imageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				try {
-					
-						File selectedImage = ImageSelector();
-						if(selectedImage != null) {
-						ImageIcon image = new ImageIcon(selectedImage.getAbsolutePath());
-						
-						Image scaledImage = image.getImage().getScaledInstance(imageLabel.getWidth(), imageLabel.getHeight(), Image.SCALE_SMOOTH);
-						
-						setTempFileHolder(selectedImage);
-						
-						imageLabel.setIcon(new ImageIcon(scaledImage));
-						
-						}else {
-							throw new InputMismatchException();
-						}
-						
-						
-				} catch(InputMismatchException ex) {
-
-				}
+				
+				FileManager manager = new FileManager();
+				manager.resizeImage(dateLabel);
+				
 			}
 		});
 		imageButton.setBounds(398, 272, 126, 42);
@@ -345,47 +315,10 @@ public class AddMovie extends JFrame {
 		yearTextField.setText("");
 		plotArea.setText("");
 	}
-	
-	public static File ImageSelector() {
-		try {
-			
-			JFileChooser imageChooser = new JFileChooser();
-			
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("Image files", "png", "jpg");
-			
-			imageChooser.setFileFilter(filter);
-			
-			imageChooser.setCurrentDirectory(new File("."));
-			
-			int result = imageChooser.showOpenDialog(null);
-			
-			System.out.println("Result" + result);
-			
-			if(result == JFileChooser.APPROVE_OPTION)
-			{
-				File selectedFile = new File(imageChooser.getSelectedFile().getAbsolutePath());
-				System.out.println("Filepath " + selectedFile);
-				
-				return selectedFile;
-
-			}
-			else if(result == JFileChooser.CANCEL_OPTION)
-			{
-				return null;
-			}
-			
-		}catch(Exception ex) {
-
-			return null;
-		}
-		return null;
-	}
-
 
 }
 
 
 
 //IMPORTANT EXCEPTIONS TO BE HANDLED:
-//Invalid day of month - add movie and update movie - both must be verified
 //Duplicate movie tried to be added -

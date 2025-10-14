@@ -18,6 +18,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
+/**
+ * <b><code>Program: MovieMenu.java</b></code><br>
+ * <b><code>Description: Handles the main menu</b></code><br>
+ * <b><code>Date: 10/14/2025</b></code>
+ */
 public class MovieMenu extends JFrame {
 
 	private JPanel contentPane;
@@ -60,7 +65,7 @@ public class MovieMenu extends JFrame {
 		JMenu infoMenu = new JMenu("Info");
 		menuBar.add(infoMenu);
 		
-		addMovieMenu = new JMenuItem("Add a Movie");
+		addMovieMenu = new JMenuItem("Add a Movie");		//Opens the AddMovie menu when selected
 		addMovieMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				AddMovie addMovie = new AddMovie();
@@ -69,12 +74,12 @@ public class MovieMenu extends JFrame {
 		});
 		infoMenu.add(addMovieMenu);
 		
-		modifyMovieMenu = new JMenuItem("Modify a Movie");
+		modifyMovieMenu = new JMenuItem("Modify a Movie");	//Opens the ModifyMovie menu when selected
 		modifyMovieMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				
 				ModifyMovie modifyMovie = new ModifyMovie();
-				if(modifyMovie.askMovie()) {
+				if(modifyMovie.askMovie()) {				//Calls askMovie first, and if information is accepted, opens ModifyMovie menu
 					modifyMovie.setFields();
 					modifyMovie.setVisible(true);
 				}else
@@ -85,7 +90,7 @@ public class MovieMenu extends JFrame {
 		});
 		infoMenu.add(modifyMovieMenu);
 		
-		displayMovie = new JMenuItem("Display a Movie");
+		displayMovie = new JMenuItem("Display a Movie");	//Opens the DisplayMovie menu when selected
 		displayMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				
@@ -102,10 +107,10 @@ public class MovieMenu extends JFrame {
 
 				MovieQueries movieQueries = new MovieQueries();
 			 
-				int selections = JOptionPane.showConfirmDialog(null, fields, "Enter Movie Details", JOptionPane.OK_CANCEL_OPTION);
+				int selections = JOptionPane.showConfirmDialog(null, fields, "Enter Movie Details", JOptionPane.OK_CANCEL_OPTION); //Opening pop-up asking for movie to display
 				if(selections == JOptionPane.OK_OPTION) {
-					try {
-						ShowMovie movie = new ShowMovie();
+					try {										//Attempting to open the movie with the desired details
+						ShowMovie movie = new ShowMovie();	
 						movie.setFields(askTitleTextField.getText(), askDirectorTextField.getText(), askReleaseYearTextField.getText());
 						movie.setVisible(true);
 					} catch (NumberFormatException ex) {
@@ -120,7 +125,7 @@ public class MovieMenu extends JFrame {
 		
 		showMoviesMenu = new JMenuItem("Show all Movies");
 		showMoviesMenu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
+			public void actionPerformed(ActionEvent event) {	//Opens the AllMovies menu when selected
 				AllMovies allMovies = new AllMovies();
 				allMovies.setVisible(true);
 			}
@@ -130,7 +135,7 @@ public class MovieMenu extends JFrame {
 		exitMenu = new JMenuItem("Exit");
 		exitMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				System.exit(0);
+				System.exit(0);		//Exits the program when selected
 			}
 		});
 		infoMenu.add(exitMenu);
@@ -139,12 +144,18 @@ public class MovieMenu extends JFrame {
 		menuBar.add(helpMenu);
 		
 		contentsMenu = new JMenuItem("Help Contents");
+		contentsMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				HelpMenu helpMenu = new HelpMenu();			//Creates and opens the HelpMenu when selected
+				helpMenu.setVisible(true);
+			}
+		});
 		helpMenu.add(contentsMenu);
 		
 		aboutMenu = new JMenuItem("About");
 		aboutMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				About aboutMenu = new About();
+				About aboutMenu = new About();				//Creates and opens the AboutMenu when selected
 				aboutMenu.setVisible(true);
 			}
 		});

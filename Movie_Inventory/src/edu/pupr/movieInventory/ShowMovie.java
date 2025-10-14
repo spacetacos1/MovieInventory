@@ -16,6 +16,11 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * <b><code>Program: ShowMovie.java</b></code><br>
+ * <b><code>Description: Handles displaying a movie</b></code><br>
+ * <b><code>Date: 10/14/2025</b></code>
+ */
 public class ShowMovie extends JFrame {
 
 	private JPanel contentPane;
@@ -136,6 +141,12 @@ public class ShowMovie extends JFrame {
 		contentPane.add(btnNewButton);
 	}
 	
+	/**
+	 * Fills all the fields with the information of the selected movie
+	 * @param title	- Selected movie title
+	 * @param director - Selected movie director
+	 * @param year - Selected movie release year
+	 */
 	public void setFields(String title, String director, String year) {
 		
 		MovieQueries movieQueries = new MovieQueries();
@@ -155,9 +166,10 @@ public class ShowMovie extends JFrame {
 		ratingTextField.setText(movie.getRating());
 		
 		FileManager manager = new FileManager();
-		posterLabel.setIcon(manager.getFileImage(title,posterLabel));
+		posterLabel.setIcon(manager.getFileImage(title,posterLabel));	//Using manager, gets the image for the poster section
 	}
 
+	
 	private String getMonth(Integer month) {
 
 		String[] months = {"January ", "February ", "March ", "April ", "May ", "June ", "July ", "August ", "September ", "October ", "November ", "December "};

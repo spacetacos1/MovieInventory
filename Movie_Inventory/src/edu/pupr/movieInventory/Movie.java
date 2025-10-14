@@ -5,9 +5,14 @@ import java.time.LocalDate;
 
 import javax.swing.JFileChooser;
 
+
+/**
+ * <b><code>Program: Movie.java</code></b></br>
+ * <b><code>Description: Class for Movie Object</b></code><br>
+ * <b><code>Date: 10/14/2025</b></code>
+ */
 public class Movie {
 	private String title;
-	//private JFileChooser poster;
 	private String director;
 	private String plot;
 	private String rating;
@@ -17,6 +22,15 @@ public class Movie {
 	
 	public Movie() {}
 	
+	/**
+	 * Constructor for the Movie Object
+	 * @param title
+	 * @param director
+	 * @param plot
+	 * @param rating
+	 * @param budget
+	 * @param releaseDate
+	 */
 	public Movie(String title, String director, String plot, String rating, double budget, LocalDate releaseDate)
 	{
 		setTitle(title);
@@ -28,56 +42,29 @@ public class Movie {
 	}
 
 	//Getters and Setters
-	public String getTitle() {
-		return title;
-	}
-
+	
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public String getDirector() {
-		return director;
 	}
 
 	public void setDirector(String director) {
 		this.director = director;
 	}
 
-	public String getPlot() {
-		return plot;
-	}
-
 	public void setPlot(String plot) {
 		this.plot = plot;
-	}
-
-	public String getRating() {
-		return rating;
 	}
 
 	public void setRating(String rating) {
 		this.rating = rating;
 	}
 
-	public double getBudget() {
-		return budget;
-	}
-
 	public void setBudget(double budget) {
 		this.budget = budget;
 	}
 
-	public LocalDate getReleaseDate() {
-		return releaseDate;
-	}
-
 	public void setReleaseDate(LocalDate releaseDate) {
 		this.releaseDate = releaseDate;
-	}
-
-	public File getPosterFile() {
-		return posterFile;
 	}
 
 	public void setPosterFile(File posterFile) {
@@ -85,6 +72,33 @@ public class Movie {
 	}
 	
 	
+	//Getters
 	
+	public String getTitle() {
+		return title;
+	}
 	
+	public String getDirector() {
+		return director;
+	}
+	
+	public String getPlot() {
+		return plot;
+	}
+	
+	public String getRating() {
+		return rating;
+	}
+	
+	public double getBudget() {
+		return budget;
+	}
+	
+	public LocalDate getReleaseDate() {
+		return releaseDate;
+	}
+	
+	public File getPosterFile() {
+		return posterFile;
+	}
 }

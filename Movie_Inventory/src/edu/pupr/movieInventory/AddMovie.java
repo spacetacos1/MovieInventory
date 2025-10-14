@@ -39,6 +39,11 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.InputMismatchException;
 
+/**
+ * <b><code>Program: AddMovie.java</b></code><br>
+ * <b><code>Description: Handles the AddMovie menu</b></code><br>
+ * <b><code>Date: 10/14/2025</b></code>
+ */
 public class AddMovie extends JFrame {
 
 	private JPanel contentPane;
@@ -53,7 +58,7 @@ public class AddMovie extends JFrame {
 	private JComboBox ratingComboBox;
 	private JComboBox monthComboBox;
 	private JLabel imageLabel;
-	private File tempFileHolder;
+	private File tempFileHolder;	//Holds the selected file for addition later
 	
 
 	/**
@@ -88,10 +93,10 @@ public class AddMovie extends JFrame {
 		
 		addButton = new JButton("Add Movie");
 		addButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
+			public void actionPerformed(ActionEvent event) {	//Action of adding a movie
 				
 				if(imageLabel.getIcon() != null) {
-				MovieQueries addMovie = new MovieQueries();
+				MovieQueries addMovie = new MovieQueries();		//Only adds a movie if there is a poster set
 				
 				try {
 				String title = titleTextField.getText();
@@ -99,7 +104,7 @@ public class AddMovie extends JFrame {
 				String plot = plotArea.getText();
 				String rating = "";
 				
-				switch(ratingComboBox.getSelectedIndex()) {
+				switch(ratingComboBox.getSelectedIndex()) {		//Determine the rating based on the selected index
 				case 0:
 					rating = "G";
 					break;
@@ -125,12 +130,12 @@ public class AddMovie extends JFrame {
 				int month = monthComboBox.getSelectedIndex() + 1;
 				int year = Integer.parseInt(yearTextField.getText());
 				
-				Date releaseDate = Date.valueOf(LocalDate.of(year,  month,  day));
+				Date releaseDate = Date.valueOf(LocalDate.of(year,  month,  day));	//Turns the LocalDate into a Date type
 				int result = addMovie.addMovie(title, director, plot, rating, budget, releaseDate);
 				if(result == 1) {
-					JOptionPane.showMessageDialog(null, "Record successfully inserted!");
+					JOptionPane.showMessageDialog(null, "Record successfully inserted!");	//If the movie was successfully added
 					
-					FileManager manager = new FileManager(getTempFileHolder(), title);
+					FileManager manager = new FileManager(getTempFileHolder(), title);	//Create a manager and add the poster into file directory
 					manager.addFile();
 			        clearFields();
 				}else
@@ -209,7 +214,7 @@ public class AddMovie extends JFrame {
 			@Override
 			public void focusLost(FocusEvent event) {
 				if(dayTextField.getText().length() > 0 && !(addButton.isSelected())) {
-					verifyInput(dayTextField);
+					verifyInputInt(dayTextField);
 					}
 			}
 		});
@@ -223,7 +228,7 @@ public class AddMovie extends JFrame {
 			@Override
 			public void focusLost(FocusEvent event) {
 				if(yearTextField.getText().length() > 0 && !(addButton.isSelected())) {
-					verifyInput(yearTextField);
+					verifyInputInt(yearTextField);
 					}
 			}
 		});
@@ -281,6 +286,11 @@ public class AddMovie extends JFrame {
 		contentPane.add(imageButton);
 	}
 	
+	/**
+	 * Verifies the input for all double fields
+	 * @param textField
+	 * @return
+	 */
 	private boolean verifyInput(JTextField textField) {
 		boolean flag = true;
 		
@@ -296,6 +306,25 @@ public class AddMovie extends JFrame {
 	
 }
 	
+	/**
+	 * Verifies the input for all integer fields
+	 * @param textField
+	 * @return
+	 */
+	private boolean verifyInputInt(JTextField textField) {
+		boolean flag = true;
+		
+		try {
+			Integer.parseInt(textField.getText());
+		}catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(null, "Must enter whole numbers!");
+			textField.requestFocus();
+			textField.selectAll();
+			flag = false;
+		}
+		return flag;
+	}
+	
 	private void setTempFileHolder(File file) {
 		tempFileHolder = file;
 	}
@@ -304,6 +333,9 @@ public class AddMovie extends JFrame {
 		return tempFileHolder;
 	}
 	
+	/**
+	 * Clears all the fields in the menu
+	 */
 	private void clearFields() {
 		imageLabel.setIcon(null);
 		titleTextField.setText("");

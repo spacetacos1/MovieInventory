@@ -36,6 +36,11 @@ import java.io.File;
 import javax.swing.JTextPane;
 import javax.swing.JTextArea;
 
+/**
+ * <b><code>Program: ModifyMove.java</b></code><br>
+ * <b><code>Description: Handles the ModifyMovie menu</b></code><br>
+ * <b><code>Date: 10/14/2025</b></code>
+ */
 public class ModifyMovie extends JFrame {
 
 	private JPanel contentPane;
@@ -112,7 +117,7 @@ public class ModifyMovie extends JFrame {
 		updateButton = new JButton("Update");
 		updateButton.setBounds(373, 178, 151, 32);
 		updateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
+			public void actionPerformed(ActionEvent event) {	//Receives all of the details placed by the user and sends them to MovieQueries to update
 				
 				MovieQueries movieQueries = new MovieQueries();
 				String title = titleTextField.getText();
@@ -124,7 +129,7 @@ public class ModifyMovie extends JFrame {
 				
 				int result = movieQueries.updateMovie(title, director, plot,rating, budget, releaseDate);
 				
-				FileManager manager = new FileManager(getTempFileHolder(), title);
+				FileManager manager = new FileManager(getTempFileHolder(), title);	//Creates a new file manager to add the new poster into the PosterDirectory
 				manager.addFile();
 				
 				if(result == 1) {
@@ -148,7 +153,8 @@ public class ModifyMovie extends JFrame {
 		askMovieButton = new JButton("Search Movie");
 		askMovieButton.setBounds(373, 217, 151, 32);
 		askMovieButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
+			public void actionPerformed(ActionEvent event) {	//Calls askMovie() to search a movie, then calls setFields() 
+																//to fill the information of the resulting movie
 
 				if(askMovie()) {
 						setFields();
@@ -187,7 +193,7 @@ public class ModifyMovie extends JFrame {
 			@Override
 			public void focusLost(FocusEvent event) {
 				if(dayTextField.getText().length() > 0 && !(updateButton.isSelected())) {
-					verifyInput(dayTextField);
+					verifyInputInt(dayTextField);
 					}
 			}
 		});
@@ -213,7 +219,7 @@ public class ModifyMovie extends JFrame {
 			@Override
 			public void focusLost(FocusEvent event) {
 				if(yearTextField.getText().length() > 0 && !(updateButton.isSelected())) {
-					verifyInput(yearTextField);
+					verifyInputInt(yearTextField);
 					}
 			}
 		});
@@ -246,7 +252,7 @@ public class ModifyMovie extends JFrame {
 		
 		newPosterButton = new JButton("Set New Poster");
 		newPosterButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
+			public void actionPerformed(ActionEvent event) {	//Makes a manager to open a JFileChooser and select a new poster
 				if(imageLabel.getIcon() != null) {
 				FileManager manager = new FileManager();
 				manager.resizeImage(imageLabel);
@@ -263,6 +269,11 @@ public class ModifyMovie extends JFrame {
 		contentPane.add(imageLabel);
 	}
 	
+	/**
+	 * Verifies the input for all double fields
+	 * @param textField
+	 * @return
+	 */
 	private boolean verifyInput(JTextField textField) {
 		boolean flag = true;
 		
@@ -277,6 +288,30 @@ public class ModifyMovie extends JFrame {
 		return flag;
 	}
 	
+	/**
+	 * Verifies the input for all integer fields
+	 * @param textField
+	 * @return
+	 */
+	private boolean verifyInputInt(JTextField textField) {
+		boolean flag = true;
+		
+		try {
+			Integer.parseInt(textField.getText());
+		}catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(null, "Must enter whole numbers!");
+			textField.requestFocus();
+			textField.selectAll();
+			flag = false;
+		}
+		return flag;
+	}
+	
+	/**
+	 * Receives the string value of a rating and selects the appropriate comboBox index
+	 * @param ratingValue
+	 * @return
+	 */
 	private int getRatingIndex(String ratingValue) {
 		switch(ratingValue) {
 		case "G":
@@ -294,6 +329,11 @@ public class ModifyMovie extends JFrame {
 		}
 	}
 	
+	/**
+	 * Receives the selected comboBox index and determines the selected rating to assign
+	 * @param ratingValue
+	 * @return
+	 */
 	private String getRating(int ratingValue) {
 		switch(ratingValue) {
 		case 0:
@@ -311,6 +351,9 @@ public class ModifyMovie extends JFrame {
 		}
 	}
 	
+	/**
+	 * Clears all the fields in the menu
+	 */
 	private void clearFields() {
 		imageLabel.setIcon(null);
 		titleTextField.setText("");
@@ -323,7 +366,9 @@ public class ModifyMovie extends JFrame {
 		plotTextArea.setText("");
 	}
 	
-	
+	/**
+	 * Receives all the fields of a movie and fills them into the menu
+	 */
 	public void setFields() {
 
 		try {
@@ -337,7 +382,7 @@ public class ModifyMovie extends JFrame {
 	List<Movie> list = movieQueries.getMovieByTitleDirectorYear(title, director, year);
 	Movie movie = (Movie)list.get(0);
 	
-	titleTextField.setText(movie.getTitle().toString());
+	titleTextField.setText(movie.getTitle().toString());		//Setting all of the text fields
 	directorTextField.setText(movie.getDirector());
 	plotTextArea.setText(movie.getPlot());
 	yearTextField.setText(String.valueOf(movie.getReleaseDate().getYear()));
@@ -345,11 +390,11 @@ public class ModifyMovie extends JFrame {
 	dayTextField.setText(String.valueOf(movie.getReleaseDate().getDayOfMonth()));
 	budgetTextField.setText(String.format("%,.2f", movie.getBudget()));
 	
-	ratingComboBox.setSelectedIndex(getRatingIndex(movie.getRating()));
+	ratingComboBox.setSelectedIndex(getRatingIndex(movie.getRating()));				
 	
-	FileManager manager = new FileManager();
-	imageLabel.setIcon(manager.getFileImage(title,imageLabel));
-	setTempFileHolder(manager.getFile());
+	FileManager manager = new FileManager();					//Makes a manager to set the poster of the movie by using its title
+	imageLabel.setIcon(manager.getFileImage(title,imageLabel)); 
+	setTempFileHolder(manager.getFile());						//Updates our temporary file holder
 	
 		}catch (NumberFormatException ex) {
 			JOptionPane.showMessageDialog(null, "Invalid Year Input!");
@@ -359,6 +404,10 @@ public class ModifyMovie extends JFrame {
 
 	}
 	
+	/**
+	 * Prints a pop-up that asks the user for the details of the movie to modify
+	 * @return
+	 */
 	public boolean askMovie() {
 		JTextField askTitleTextField = new JTextField();
 		JTextField askDirectorTextField = new JTextField();
@@ -381,6 +430,7 @@ public class ModifyMovie extends JFrame {
 	}
 	
 	
+	//Setters and Getters
 	
 	public String getAskedTitle() {
 		return askedTitle;

@@ -14,19 +14,34 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+/**
+ * <b><code>Program: FileManager.java</b></code><br>
+ * <b><code>Description: Handles all the files to and from the PosterDirectory</b></code><br>
+ * <b><code>Date: 10/14/2025</b></code>
+ */
 public class FileManager {
 	
-	private File file;
-	private String fileName;
+	private File file;		//File to manage
+	private String fileName;//Name of the file
 	
+	/**
+	 * Default constructor
+	 */
 	public FileManager() {}
 	
+	/**
+	 * Parameter constructor
+	 * @param tempFile
+	 * @param fileName
+	 */
 	public FileManager(File tempFile, String fileName) {
 		setFile(tempFile);
 		setFileName(fileName);
 	}
 
-
+	/**
+	 * Creates the file at the directory and assigns it as a png image
+	 */
 	public void addFile() {
 		try {
 		File directory = new File("PosterDirectory");
@@ -48,6 +63,12 @@ public class FileManager {
 		}
 	}
 
+	/**
+	 * Returns the Image if needed and changes the icon at the JLabel to the poster image
+	 * @param title - Name of the file to be retrieved
+	 * @param imageLabel - JLabel to change
+	 * @return
+	 */
 	public ImageIcon getFileImage(String title, JLabel imageLabel) {
 		
 		File file = new File("PosterDirectory/" + title + ".png");
@@ -62,6 +83,10 @@ public class FileManager {
 		return new ImageIcon(scaledImage);
 	}
 	
+	/**
+	 * Resizes the image to fit the received JLabel
+	 * @param imageLabel - JLabel to constraint to
+	 */
 	public void resizeImage(JLabel imageLabel) {
 		try {
 			
@@ -85,7 +110,10 @@ public class FileManager {
 	}
 	}
 	
-	
+	/**
+	 * Uses JFileChooser to select an image file (Limited to png and jpg files)
+	 * @return
+	 */
 	public static File ImageSelector() {
 		try {
 			
@@ -95,13 +123,13 @@ public class FileManager {
 			
 			imageChooser.setFileFilter(filter);
 			
-			imageChooser.setCurrentDirectory(new File("."));
+			imageChooser.setCurrentDirectory(new File(".")); //Sets the directory to our current directory
 			
 			int result = imageChooser.showOpenDialog(null);
 			
 			System.out.println("Result" + result);
 			
-			if(result == JFileChooser.APPROVE_OPTION)
+			if(result == JFileChooser.APPROVE_OPTION)	//If approved a file, return that file
 			{
 				File selectedFile = new File(imageChooser.getSelectedFile().getAbsolutePath());
 				System.out.println("Filepath " + selectedFile);
@@ -122,6 +150,7 @@ public class FileManager {
 		return null;
 	}
 	
+	//Setters and Getters
 	public File getFile() {
 		return file;
 	}

@@ -10,6 +10,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <b><code>Program: MovieQueries.java</b></code><br>
+ * <b><code>Description: Class which performs all operations on the database</b></code><br>
+ * <b><code>Date: 10/14/2025</b></code>
+ */
 public class MovieQueries {
 	private static final String URL = "jdbc:mysql://localhost:3306/movies"; //This is the string used to connect to our database (jdbc, 
 	  //where to connect(my machine or external IP), port, database)
@@ -25,6 +30,9 @@ public class MovieQueries {
 	private PreparedStatement insertNewMovie = null;
 	private PreparedStatement updateMovie = null;
 	
+	/**
+	 * Constructor - Connects to the database and sends commands
+	 */
 	public MovieQueries() {
 		try {
 			connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);	//Connects the database with our application AuthorQueries
@@ -42,7 +50,10 @@ public class MovieQueries {
 		}
 	}
 	
-	
+	/**
+	 * Receives a list of all the movies in the database
+	 * @return
+	 */
 	public List<Movie> getAllMovies() {
 		List<Movie> results = null;
 		ResultSet resultSet = null;
@@ -69,7 +80,11 @@ public class MovieQueries {
 		return results;
 	}
 	
-	
+	/**
+	 * Receives a list of all movies with a specific title
+	 * @param title
+	 * @return
+	 */
 	public List<Movie> getMovieByTitle(String title) {
 		List<Movie> results = null;
 		ResultSet resultSet = null;
@@ -98,7 +113,11 @@ public class MovieQueries {
 		return results;
 	}
 	
-	
+	/**
+	 * Receives all movies with a specific director
+	 * @param director
+	 * @return
+	 */
 	public List<Movie> getMovieByDirector(String director) {
 		List<Movie> results = null;
 		ResultSet resultSet = null;
@@ -127,6 +146,11 @@ public class MovieQueries {
 		return results;
 	}
 	
+	/**
+	 * Receives all movies with a specific release Year
+	 * @param releaseYear
+	 * @return
+	 */
 	public List<Movie> getMovieByYear(Date releaseYear) {
 		List<Movie> results = null;
 		ResultSet resultSet = null;
@@ -155,7 +179,13 @@ public class MovieQueries {
 		return results;
 	}
 	
-	
+	/**
+	 * Gets the movie with specified Title, Director, and Year
+	 * @param title	- Title of the movie
+	 * @param director - Director of the movie
+	 * @param year - Release year of the movie
+	 * @return
+	 */
 	public List<Movie> getMovieByTitleDirectorYear(String title, String director, String year) {
 		List<Movie> results = null;
 		ResultSet resultSet = null;
@@ -186,7 +216,16 @@ public class MovieQueries {
 		return results;
 	}
 	
-	
+	/**
+	 * Adds a movie to the database with specified parameters
+	 * @param title - Title of the movie to be added
+	 * @param director - Director of the movie to be added
+	 * @param plot - Plot of the movie to be added
+	 * @param rating - Rating of the movie to be added
+	 * @param budget - Budget of the movie to be added
+	 * @param releaseDate - Release date of the movie to be added
+	 * @return
+	 */
 	public int addMovie(String title, String director, String plot, String rating, double budget, Date releaseDate) {
 		int result = 0;
 		
@@ -209,7 +248,16 @@ public class MovieQueries {
 		return result;
 	}
 	
-	
+	/**
+	 * Updates the details of a specified movie
+	 * @param title - Title of the movie
+	 * @param director - New Director of the movie
+	 * @param plot - New Plot for the movie
+	 * @param rating - New rating for the movie
+	 * @param budget - New budget for the movie
+	 * @param releaseDate - New release date for the movie
+	 * @return
+	 */
 	public int updateMovie(String title, String director, String plot, String rating, double budget, LocalDate releaseDate) {
 		int result = 0;
 		
@@ -232,7 +280,9 @@ public class MovieQueries {
 		return result;
 	}
 	
-	
+	/**
+	 * Disconnects from the database
+	 */
 	public void close() {
 		try {
 			connection.close();

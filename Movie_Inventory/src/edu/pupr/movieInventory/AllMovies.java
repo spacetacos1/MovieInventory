@@ -33,6 +33,11 @@ import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.GroupLayout.Alignment;
 
+/**
+ * <b><code>Program: AllMovies.java</b></code><br>
+ * <b><code>Description: Handles the AllMovies menu - Shows a list of movies</b></code><br>
+ * <b><code>Date: 10/14/2025</b></code>
+ */
 public class AllMovies extends JFrame {
 
 	private JPanel contentPane;
@@ -71,29 +76,25 @@ public class AllMovies extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
 
-		
+		//columnNames - Header for the list
 		  String[] columnNames = {"Title", "Director", "Plot", "Rating", "Budget", "Release Date", "Poster"}; 
 		  DefaultTableModel tableModel = new DefaultTableModel(columnNames,0) {
-			  
-			  /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+			 
 
 			  @Override
-			  public boolean isCellEditable(int row, int column) {
+			  public boolean isCellEditable(int row, int column) {	//Makes the cells non-editable
 				  return false;
 			  }
 		  };
 		  
 		  MovieQueries movieQueries = new MovieQueries(); 
-		  List<Movie> list = movieQueries.getAllMovies();
+		  List<Movie> list = movieQueries.getAllMovies();	//Gets a list of all the movies in the database
 		  
-		  DateTimeFormatter formattedDate = DateTimeFormatter.ofPattern("LLL dd yyyy");
+		  DateTimeFormatter formattedDate = DateTimeFormatter.ofPattern("LLL dd yyyy");	//Formats the date to be shown
 		  
 
 		  
-		  for(int i = 0; i < list.size(); i++) {
+		  for(int i = 0; i < list.size(); i++) {			//For loop to assign all rows and column values
 			  String title = list.get(i).getTitle();
 			  String director = list.get(i).getDirector(); 
 			  String plot = list.get(i).getPlot(); 
@@ -103,7 +104,7 @@ public class AllMovies extends JFrame {
 		  
 			  
 			  
-			  String posterPath = "PosterDirectory/" + title + ".png";
+			  String posterPath = "PosterDirectory/" + title + ".png";	//Gets the poster for each movie
 			  ImageIcon posterIcon = null;
 		  
 			  java.io.File file = new java.io.File(posterPath);
@@ -113,27 +114,29 @@ public class AllMovies extends JFrame {
 				  posterIcon = new ImageIcon(scaledImage);
 			  }
 			  
-			  Object[] data = {title, director, plot, rating, String.format("%,.2f", budget), date.format(formattedDate), posterIcon};
-			  tableModel.addRow(data); 
+			  Object[] data = {title, director, plot, rating, String.format("%,.2f", budget), date.format(formattedDate), posterIcon};	//All values are assigned to this array
+			  tableModel.addRow(data); 																									//which is representative of one row / one movie
 		  }
 		  
 		  
 		  JTable table = new JTable(tableModel);
 		  table.setDefaultEditor(Object.class, null);
-		  table.getColumnModel().getColumn(2).setCellRenderer(new WrappingTextRenderer());
+		  table.getColumnModel().getColumn(2).setCellRenderer(new WrappingTextRenderer());	//Calling CellRenderer to changing the type of cell to TextArea of JLabel
 		  table.getColumnModel().getColumn(6).setCellRenderer(new ImageRenderer());
 
 	        
-		  table.setRowHeight(table.getRowHeight() + 200); 
+		  table.setRowHeight(table.getRowHeight() + 200); 	//Changing the row height for readability
 		  JScrollPane allMovies = new JScrollPane(table); 
 		  contentPane.add(allMovies, BorderLayout.CENTER);
 		  
 }
 
 
-	
-	class WrappingTextRenderer extends JTextArea implements TableCellRenderer {
-	    public WrappingTextRenderer() {
+	/**
+	 * Class for setting column 2 as a TextArea and dynamically changing height of the rows
+	 */
+	class WrappingTextRenderer extends JTextArea implements TableCellRenderer {	
+	    public WrappingTextRenderer() {											
 	        setLineWrap(true);
 	        setWrapStyleWord(true);
 	        setOpaque(true);
@@ -146,7 +149,7 @@ public class AllMovies extends JFrame {
 	        setText(value.toString());
 
 	        setSize(table.getColumnModel().getColumn(column).getWidth(), Short.MAX_VALUE);
-	        int prefHeight = (int) (getPreferredSize().height >= 200 ? getPreferredSize().height + 1 : 200);
+	        int prefHeight = (int) (getPreferredSize().height >= 200 ? getPreferredSize().height + 1 : 200);	//Changing row height to length of text or 200
 	        if (table.getRowHeight(row) != prefHeight) {
 	            table.setRowHeight(row, prefHeight);
 	        }
@@ -155,6 +158,9 @@ public class AllMovies extends JFrame {
 	    }
 	}
 	
+	/**
+	 * Class for changing column 6 to a JLabel for image usage
+	 */
 private class ImageRenderer extends DefaultTableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -162,7 +168,7 @@ private class ImageRenderer extends DefaultTableCellRenderer {
 	        label.setVisible(true);
 
 	        if (value instanceof ImageIcon) {
-	            label.setIcon((ImageIcon) value);
+	            label.setIcon((ImageIcon) value);	//Setting the icon of the JLabel to the poster image
 	        }
 
 	        label.setHorizontalAlignment(JLabel.CENTER);
